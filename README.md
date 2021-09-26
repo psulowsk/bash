@@ -69,7 +69,7 @@ END
 ```
 * Porownanie 2 posortowanych plikow i zwrocenie jako output wyrazow wg wybranych opcji
 ```bash
-comm [opcje] <(sort[nazwa_pliku_1]) <(sort [nazwa_pliku_2])
+comm [opcje] <(sort [nazwa_pliku_1]) <(sort [nazwa_pliku_2])
 
 Opcje:
     -1 - pomin wiersze unikalne dla pliku_1
@@ -78,7 +78,7 @@ Opcje:
 ```
 * Porownanie 2 posortowanych plikow i zwrocenie jako output UNIKALNYCH wyrazow wg wybranych opcji
 ```bash
-comm [opcje] <(sort[nazwa_pliku_1] | uniq) <(sort [nazwa_pliku_2] | uniq)
+comm [opcje] <(sort [nazwa_pliku_1] | uniq) <(sort [nazwa_pliku_2] | uniq)
 
 Opcje: 
     jw.
@@ -162,7 +162,7 @@ env
 ```
 * Lista wszystkich zmiennych 
 ```bash
-declare
+declare [opcje]
 
 Opcje:
     -p - printuje liste zmiennych z ich opcjami
@@ -172,7 +172,7 @@ Opcje:
 ```
 * Deklarowanie zmiennych
 ```bash
-declare [nazwa zmiennej]
+declare [opcje] [nazwa zmiennej]
 
 Opcje:
     -x - deklaruje zmienna jaka srodowiskowa (dostepna poza aktualna powloka)
@@ -209,7 +209,7 @@ UWAGA! miedzy liczbami a operatorem musi byc spacja
 shift [liczba przesuniec]
 
 Przyklad:
-komenda shift 2 powoduje ze podajac $1 odwolujemy sie w rzeczywistosci do $3
+komenda shift 2 powoduje, ze podajac $1 odwolujemy sie w rzeczywistosci do $3
 ```
 * Ustawianie domyslnej wartosci dla zmiennej
 ```bash
@@ -247,7 +247,7 @@ set +o [nazwa opcji]
 ```bash
 set -o noclobber >> wylaczenie opcji nadpisywania plikow
 set +o noclobber >> wlaczenie opcji nadpisywania plikow
-set -f >> wylaczenie file 
+set -f >> wylaczenie file globbing
 set +f >> wlaczenie file globbing
 set -x >> wlaczenie opcji debugowania
 set +x >> wylaczenie opcji debugowania
@@ -259,7 +259,7 @@ shopt +s autocd >> wyłączenie opcji autocd
 * Wprowadzenie wybranych opcji do komendy (polecenie do przetwarzania argumentow wiersza polecen)
 ```bash
 getopts ':[nazwa_opcji_1]' >> wprowadzenie do komendy opcja_1 i ustawienia, że getopts nie zwróci żadnej diagnostic message w przypadku brakującej lub niepoprawnej opcji
-getopts '[nazwa_opcji_1]:' >> wprowadzenie do komendy opcja_1, ktora wymaga argumentu (do którego możemy się odwołać jako do $OPTARG)
+getopts '[nazwa_opcji_1]:' >> wprowadzenie do komendy opcja_1, ktora wymaga argumentu (do którego możemy się odwołać poprzez $OPTARG)
 getopts '[nazwa_opcji_1]' >> wprowadzenie do komendy opcja_1, ktora nie wymaga argumentu
 getopts ':[nazwa_opcji_1]:[nazwa_opcji_2]:' >> wprowadzenie do komendy opcja_1 i opcja_2, ktore wymagaja argumentow i ustawienia, że getopts nie zwróci żadnej diagnostic message w przypadku brakującej lub niepoprawnej opcji
 ```
@@ -308,28 +308,29 @@ UWAGA! obowiazkowo spacja miedzy warunkiem a nawiasami
 [[ warunek_1 || warunek_2]]
 ```
 UWAGA1! Przy porownywaniu mozna uzywac wymienie = i ==
+
 UWAGA2! Przy porownywaniu znaki = i == musza byc z lewej i prawej strony oddzielone spacja
 * Wybrane warunki dot. tekstu
 ```bash
-[[ $[tekst] ]] >> sprawdza czy string jest pusty 
-[[ $[teskt] = '[wartosc]' ]] >> sprawdza czy string jest rowny wybranej wartosci
-[[ $[teskt] != '[wartosc]' ]] >> sprawdza czy string nie jest rowny wybranej wartosci
-[[ $[teskt] = '*[wartosc]' ]] >> sprawdza czy string konczy sie na okreslona wartosc
-[[ $[teskt] =~ [wartosc]$ ]] >> sprawdza czy string konczy sie na okreslona wartosc
+[[ $[zmienna] ]] >> sprawdza czy string jest pusty 
+[[ $[zmienna] = '[wartosc]' ]] >> sprawdza czy string jest rowny wybranej wartosci
+[[ $[zmienna] != '[wartosc]' ]] >> sprawdza czy string nie jest rowny wybranej wartosci
+[[ $[zmienna] = '*[wartosc]' ]] >> sprawdza czy string konczy sie na okreslona wartosc
+[[ $[zmienna] =~ [wartosc]$ ]] >> sprawdza czy string konczy sie na okreslona wartosc
 ```
 * Wybrane warunki dot. porownywania wartosci
 ```bash
-[[ $[nazwa zmiennej] -gt [wartosc] ]] >> sprawdza czy zmienna > wartosc
-[[ $[nazwa zmiennej] -lt [wartosc] ]] >> sprawdza czy zmienna < wartosc
-[[ $[nazwa zmiennej] -ge [wartosc] ]] >> sprawdza czy zmienna >= wartosc
-[[ $[nazwa zmiennej] -le [wartosc] ]] >> sprawdza czy zmienna <= wartosc
+[[ $[zmienna] -gt [wartosc] ]] >> sprawdza czy zmienna > wartosc
+[[ $[zmienna] -lt [wartosc] ]] >> sprawdza czy zmienna < wartosc
+[[ $[zmienna] -ge [wartosc] ]] >> sprawdza czy zmienna >= wartosc
+[[ $[zmienna] -le [wartosc] ]] >> sprawdza czy zmienna <= wartosc
 
 lub analogicznie
 
-(( [nazwa zmiennej > [wartosc] ))
-(( [nazwa zmiennej < [wartosc] ))
-(( [nazwa zmiennej >= [wartosc] ))
-(( [nazwa zmiennej <= [wartosc] ))
+(( [zmienna] > [wartosc] ))
+(( [zmienna] < [wartosc] ))
+(( [zmienna] >= [wartosc] ))
+(( [zmienna] <= [wartosc] ))
 
 UWAGA! korzystajac z okraglych nawiasow (), przy zmiennej nie ma koniecznosci podawac $
 ```
@@ -371,16 +372,16 @@ esac
 ```
 * Wybrane warunki dot. plikow i innych obiektow
 ```bash
-[[ -f $[nazwa pliku ]] >> sprawdza czy istnieje regularny plik
-[[ -e $[nazwa pliku ]] >> sprawdza czy istnieje plik dowolnego typu
-[[ ! -e $[nazwa pliku ]] >> sprawdza czy nie istnieje plik dowolnego typu
-[[ -d $[nazwa directory ]] >> sprawdza czy istnieje directory
-[[ -L $[nazwa symbolic link ]] >> sprawdza czy istnieje symbolic link
-[[ -r $[nazwa pliku ]] >> sprawdza czy plik ma read-only permission
-[[ -w $[nazwa pliku ]] >> sprawdza czy plik ma write permission
-[[ -x $[nazwa pliku ]] >> sprawdza czy plik ma execute permission
-[[ -k $[nazwa pliku ]] >> sprawdza czy istnieje sticky bit
-[[ -s $[nazwa pliku ]] >> sprawdza czy istnieje suid bit
+[[ -f $[nazwa pliku] ]] >> sprawdza czy istnieje regularny plik
+[[ -e $[nazwa pliku] ]] >> sprawdza czy istnieje plik dowolnego typu
+[[ ! -e $[nazwa pliku] ]] >> sprawdza czy nie istnieje plik dowolnego typu
+[[ -d $[nazwa directory] ]] >> sprawdza czy istnieje directory
+[[ -L $[nazwa symbolic link] ]] >> sprawdza czy istnieje symbolic link
+[[ -r $[nazwa pliku] ]] >> sprawdza czy plik ma read-only permission
+[[ -w $[nazwa pliku] ]] >> sprawdza czy plik ma write permission
+[[ -x $[nazwa pliku] ]] >> sprawdza czy plik ma execute permission
+[[ -k $[nazwa pliku] ]] >> sprawdza czy istnieje sticky bit
+[[ -s $[nazwa pliku] ]] >> sprawdza czy istnieje suid bit
 [[ ! $1 ]] >> sprawdza czy uzytkownik wpisal pierwszy argument
 ```
 
@@ -431,7 +432,7 @@ do
     [polecenie]
 done
 ```
-* Postac petli FOR dzialac na array
+* Postac petli FOR dzialajac na array
 ```bash
 for (([zmienna]=[wartosc poczatkowa];[zmienna][< lub >] ${#[nazwa array][*]; [zmienna][++ lub --]))
 do 
@@ -444,7 +445,7 @@ do
     [polecenie]
 done
 ```
-* Skrocona postac petli FOR dzialac na array
+* Skrocona postac petli FOR dzialajac na array
 ```bash
 for [zmienna] in ${[nazwa array][*]}
 do
@@ -521,7 +522,7 @@ nohup
 ```
 * Zaplanowanie wykonania skryptu o konkretnej porze (i przydzieleniu mu job id)
 ```bash
-at [czas wykonania skryptu] [skrypt do wykonania]
+at [czas wykonania skryptu] [wykonywany skrypt]
 
 UWAGA! at pozwala zaplanowac JEDNORAZOWE uruchomienie skryptu
 ```
